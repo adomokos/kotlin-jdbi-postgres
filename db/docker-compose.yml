@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  jdbiktpg-db:
+    container_name: jdbiktpg-db-${APP_ENV:-dev}
+    image: postgres:14-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ../.env.${APP_ENV:-dev}
+    volumes:
+      - ./resources/sql/:/docker-entrypoint-initdb.d/

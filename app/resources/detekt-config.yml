@@ -1,0 +1,5 @@
+build:
+  # total issues are (number of issues * weight of issue)
+  maxIssues: 20
+  weights:
+    comments: 0 # comment rules are just a nice to know
