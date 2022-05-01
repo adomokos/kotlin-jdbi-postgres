@@ -10,3 +10,4 @@ services:
       - ../.env.${APP_ENV:-dev}
     volumes:
       - ./resources/sql/:/docker-entrypoint-initdb.d/
+    command: ["postgres", "-c", "log_statement=all"]

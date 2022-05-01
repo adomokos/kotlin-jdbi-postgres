@@ -1,4 +1,4 @@
-CREATE TABLE user (
-  id INTEGER PRIMARY KEY,
+CREATE TABLE users(
+  id SERIAL PRIMARY KEY,
   name text not null
 );

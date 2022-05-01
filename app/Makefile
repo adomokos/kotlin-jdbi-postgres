@@ -1,3 +1,6 @@
+-include ../.env.$(or $(APP_ENV),dev)
+export
+
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 
 #################
