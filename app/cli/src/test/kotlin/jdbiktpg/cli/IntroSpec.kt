@@ -2,14 +2,10 @@ package jdbiktpg.cli
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import org.jdbi.v3.sqlobject.SqlObject
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jdbi.v3.sqlobject.transaction.Transaction
-
-
-
 
 data class User(val id: Int, val name: String)
 
@@ -21,16 +17,18 @@ interface UserDao {
     @SqlUpdate("INSERT INTO users (id, name) VALUES (:id, :name)")
     fun insertNamed(@Bind("id") id: Int, @Bind("name") name: String)
 
-    @SqlQuery("SELECT * FROM users ORDER BY name")
     // @RegisterBeanMapper(User::class)
+    @SqlQuery("SELECT * FROM users ORDER BY name")
     fun listUsers(): List<User>
 }
 
 abstract class Dao {
     @SqlUpdate("insert into something values('something')")
     abstract fun saveSomething()
+
     @SqlUpdate("insert into something_else values('something_else')")
     abstract fun saveSomethingElse()
+
     @Transaction
     fun insertInTransaction() {
         saveSomething()
