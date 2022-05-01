@@ -4,10 +4,12 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.mapper.reflect.ColumnName
+import org.jdbi.v3.core.statement.PreparedBatch
 import org.jdbi.v3.sqlobject.customizer.Bind
 import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 import org.jdbi.v3.sqlobject.transaction.Transaction
+
 
 // ColumnName attribute can define the SQL column for us
 data class User(val id: Int, @ColumnName("name") val name: String)
@@ -81,7 +83,7 @@ class IntroSpec : StringSpec({
             handle.execute("INSERT INTO users (id, name) VALUES (?, ?)", 2, "Bob")
 
             val users = handle.createQuery("SELECT id, name FROM users ORDER BY id ASC")
-                .map { rs, _ctx -> User(rs.getInt("id"), rs.getString("name")) }
+                .map { rs, _ -> User(rs.getInt("id"), rs.getString("name")) }
                 .list()
 
             users.size shouldBe 2
@@ -102,6 +104,20 @@ class IntroSpec : StringSpec({
 
             users.size shouldBe 2
             users.first().name shouldBe "Alice"
+
+            handle.rollback()
+        }
+    }
+
+    "can insert records in bulk" {
+        transaction { handle ->
+            val batch: PreparedBatch = handle.prepareBatch("INSERT INTO users (id, name) VALUES(:id, :name)")
+            for (i in 100..4999) {
+                batch.bind("id", i).bind("name", "User:$i").add()
+            }
+            val counts = batch.execute()
+
+            counts.size shouldBe 4900
 
             handle.rollback()
         }
