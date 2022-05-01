@@ -9,15 +9,25 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery
 import org.jdbi.v3.sqlobject.statement.SqlUpdate
 
 // ColumnName attribute can define the SQL column for us
-data class User(val id: Int, @ColumnName("name") val name: String, val phoneNumbers: List<PhoneNumber> = emptyList())
+data class User(
+    val id: Int,
+
+    @ColumnName("name")
+    val name: String,
+
+    val phoneNumbers: MutableList<PhoneNumber> = mutableListOf()
+) {
+    fun addPhone(phone: PhoneNumber) = phoneNumbers.add(phone)
+}
 
 data class PhoneNumber(
     val id: Int = 0,
-    @Nested("user")
-    val user: User,
 
     @ColumnName("phone_number")
-    val phoneNumber: String
+    val phoneNumber: String,
+
+    @Nested("user")
+    val user: User? = null
 )
 
 // Declarative API
@@ -38,6 +48,18 @@ interface UserDao {
     // @RegisterBeanMapper(User::class)
     @SqlQuery("SELECT * FROM users ORDER BY name")
     fun listUsers(): List<User>
+
+    fun findUsersWithPhoneNumbersSql(): String =
+        """
+            SELECT
+                u.id as u_id,        
+                u.name as u_name,
+                p.id as p_id,
+                p.phone_number as p_phone_number
+            FROM users u
+            LEFT JOIN phone_numbers p
+              ON u.id = p.user_id
+        """.trimIndent()
 }
 
 interface PhoneNumberDao {

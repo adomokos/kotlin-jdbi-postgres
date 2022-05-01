@@ -4,6 +4,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import jdbiktpg.cli.db.User
 import jdbiktpg.cli.db.UserDao
+import org.jdbi.v3.core.kotlin.KotlinMapperFactory
 import org.jdbi.v3.core.kotlin.mapTo
 import org.jdbi.v3.core.statement.PreparedBatch
 
@@ -101,6 +102,11 @@ class IntroSpec : StringSpec({
             )
 
             inserted shouldBe listOf(1, 1)
+
+            val sql = dao.findUsersWithPhoneNumbersSql()
+
+            handle.createUpdate(sql)
+                .registerRowMapper(KotlinMapperFactory())
 
             handle.rollback()
         }
