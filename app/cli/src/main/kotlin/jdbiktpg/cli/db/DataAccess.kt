@@ -54,7 +54,8 @@ interface PhoneNumberDao {
           INNER JOIN users AS u
             ON u.id = pn.user_id
           WHERE pn.user_id = :userId 
-        """)
+        """
+    )
     fun phoneNumbersForUserId(userId: Int): List<PhoneNumber>
 }
 
