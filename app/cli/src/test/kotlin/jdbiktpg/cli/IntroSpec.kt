@@ -93,13 +93,14 @@ class IntroSpec : StringSpec({
         transaction { handle ->
             val dao = handle.attach(UserDao::class.java)
 
-            val inserted = dao.insertMany(listOf(
-                User(1, "Alice"),
-                User(2, "Bob")
-            ))
+            val inserted = dao.insertMany(
+                listOf(
+                    User(1, "Alice"),
+                    User(2, "Bob")
+                )
+            )
 
-
-            println(inserted)
+            inserted shouldBe listOf(1, 1)
 
             handle.rollback()
         }
