@@ -1,0 +1,32 @@
+name: Project Build
+
+env:
+  APP_ENV: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  full-build-project:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up db
+        working-directory: db
+        run: make db-reset
+
+      - name: Lint, complexity check, compile and run tests
+        working-directory: app
+        run: make lint detekt build test
