@@ -13,7 +13,7 @@ data class User(val id: Int, @ColumnName("name") val name: String, val phoneNumb
 
 data class PhoneNumber(
     val id: Int = 0,
-    @Nested(value = "user")
+    @Nested("user")
     val user: User,
 
     @ColumnName("phone_number")
@@ -44,6 +44,18 @@ interface PhoneNumberDao {
     // This can return the persisted object with new IDs
     @SqlUpdate("INSERT INTO phone_numbers (user_id, phone_number) VALUES (:phone_number.user.id, :phone_number.phone_number)")
     fun insertObject(phoneNumber: PhoneNumber)
+
+    @SqlQuery(
+        """
+          SELECT pn.id, pn.phone_number,
+            u.id AS user_id,
+            u.name AS user_name
+          FROM phone_numbers pn
+          INNER JOIN users AS u
+            ON u.id = pn.user_id
+          WHERE pn.user_id = :userId 
+        """)
+    fun phoneNumbersForUserId(userId: Int): List<PhoneNumber>
 }
 
 /*

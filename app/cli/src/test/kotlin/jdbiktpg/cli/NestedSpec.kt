@@ -3,6 +3,7 @@ package jdbiktpg.cli
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import jdbiktpg.cli.db.PhoneNumber
+import jdbiktpg.cli.db.PhoneNumberDao
 import jdbiktpg.cli.db.User
 import jdbiktpg.cli.db.UserDao
 
@@ -35,6 +36,15 @@ class NestedSpec : StringSpec({
             }
 
             val counts = batch.execute()
+
+            counts.size shouldBe 4
+
+
+            val pnDao = handle.attach(PhoneNumberDao::class.java)
+
+            val results = pnDao.phoneNumbersForUserId(alice.id)
+
+            println(results)
 
             handle.rollback()
         }
