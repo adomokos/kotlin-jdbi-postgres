@@ -29,10 +29,6 @@ db-migrate: ## Runs Postgres migrations with Flyway
 	flyway migrate -locations="flyway/sql" -schemas="jdbiktpg" -baselineOnMigrate="true" \
 		 -url="jdbc:postgresql://$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?user=$(POSTGRES_USER)&password=$(POSTGRES_PASSWORD)"
 
-.PHONY: db-print
-db-print: ## Prints tables populated from Codat
-	$(MAKE) -f debugging.mk db-print
-
 #######################
 ## Docker-based Targets
 #######################
