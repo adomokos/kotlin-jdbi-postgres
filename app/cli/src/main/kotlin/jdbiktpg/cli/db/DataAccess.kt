@@ -42,7 +42,12 @@ interface UserDao {
 
 interface PhoneNumberDao {
     // This can return the persisted object with new IDs
-    @SqlUpdate("INSERT INTO phone_numbers (user_id, phone_number) VALUES (:phone_number.user.id, :phone_number.phone_number)")
+    @SqlUpdate(
+        """
+            INSERT INTO phone_numbers (user_id, phone_number)
+            VALUES (:phone_number.user.id, :phone_number.phone_number)
+        """
+    )
     fun insertObject(phoneNumber: PhoneNumber)
 
     @SqlQuery(

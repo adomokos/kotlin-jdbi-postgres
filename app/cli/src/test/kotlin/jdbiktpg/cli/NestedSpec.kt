@@ -50,10 +50,7 @@ class NestedSpec : StringSpec({
             val users = setUpNestedRelationship(handle)
 
             val pnDao = handle.attach(PhoneNumberDao::class.java)
-
             val results = pnDao.phoneNumbersForUserId(users["alice"]!!.id)
-
-            println(results)
 
             results.size shouldBe 2
 
