@@ -14,7 +14,7 @@ import org.jdbi.v3.sqlobject.transaction.Transaction
 data class User(val id: Int, val name: String)
 
 // Declarative API
-interface UserDao: SqlObject {
+interface UserDao {
     @SqlUpdate("INSERT INTO users (id, name) VALUES (?, ?)")
     fun insertPositional(id: Int, name: String)
 
